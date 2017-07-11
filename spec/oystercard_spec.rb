@@ -4,6 +4,8 @@ describe Oystercard do
 
   subject(:oyster) { described_class.new }
   let(:station) {double :station}
+  let(:entry_station) {double :entry_station}
+  let(:exit_station) {double :exit_station}
 
   describe '#initialize' do
     it 'has balance of 0' do
@@ -56,14 +58,14 @@ describe Oystercard do
     before do
       oyster.top_up(Oystercard::MINIMUM_BALANCE)
       oyster.touch_in(station)
-      oyster.touch_out
+      oyster.touch_out(station)
     end
     it 'touches out the card' do
       expect(oyster).not_to be_in_journey
     end
 
     it 'reduces the balance by the minimum fare' do
-      expect {oyster.touch_out}.to change{oyster.balance}.by(-Oystercard::MINIMUM_BALANCE)
+      expect {oyster.touch_out(station)}.to change{oyster.balance}.by(-Oystercard::MINIMUM_BALANCE)
     end
 
     it 'forgets the entry station after touch out' do
@@ -71,6 +73,26 @@ describe Oystercard do
       expect{entry_station.to be_nil}
     end
 
+    it 'records an exit station' do
+      expect(oyster.exit_station).to eq station
+    end
   end
 
+    it 'starts with an empty list of journeys' do
+      expect{ oyster.journeys.to be_empty? }
+    end
+
+    before do
+      oyster.top_up(Oystercard::MINIMUM_BALANCE)
+      oyster.touch_in(entry_station)
+      oyster.touch_out(exit_station)
+    end
+
+    it 'creates a entry journey' do
+      expect{ oyster.journeys.to have_key(entry_station) }
+    end
+
+    it 'creates a exit journey' do
+      expect{ oyster.journeys.to have_value(exit_station) }
+    end
 end
