@@ -10,7 +10,7 @@ class Oystercard
     @in_journey = false
     @entry_station
     @exit_station
-    @journeys = {}
+    @journeys = []
   end
 
   def top_up(amount)
@@ -27,13 +27,15 @@ class Oystercard
 
   def touch_out(exit_station)
     deduct(MINIMUM_BALANCE)
+    @journeys << { @entry_station => exit_station }
     @entry_station = nil
     @in_journey = false
     @exit_station = exit_station
   end
-    def in_journey?
-      !!@entry_station
-    end
+
+  def in_journey?
+    !!@entry_station
+  end
 
   private
 

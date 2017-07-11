@@ -4,8 +4,9 @@ describe Oystercard do
 
   subject(:oyster) { described_class.new }
   let(:station) {double :station}
-  let(:entry_station) {double :entry_station}
-  let(:exit_station) {double :exit_station}
+  let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
+  let(:journey) { {entry_station: entry_station, exit_station: exit_station}}
 
   describe '#initialize' do
     it 'has balance of 0' do
@@ -88,11 +89,7 @@ describe Oystercard do
       oyster.touch_out(exit_station)
     end
 
-    it 'creates a entry journey' do
-      expect{ oyster.journeys.to have_key(entry_station) }
-    end
-
-    it 'creates a exit journey' do
-      expect{ oyster.journeys.to have_value(exit_station) }
+    it 'stores a journey' do
+      expect(oyster.journeys).to eq [{entry_station => exit_station}]
     end
 end
