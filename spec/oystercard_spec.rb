@@ -9,7 +9,7 @@ describe Oystercard do
       expect(oyster.balance).to eq(0)
     end
   end
-    
+
   describe '#top_up' do
 
     it {is_expected.to respond_to(:top_up).with(1).argument}
@@ -24,6 +24,14 @@ describe Oystercard do
      expect{oyster.top_up 1}.to raise_error "Maximum limit exceeded £#{maximum_balance}"
    end
  end
+
+  describe '#deduct' do
+    it 'deducts balance' do
+      expect{oyster.deduct(1)}.to change {oyster.balance}.by -1
+    end
+  end
+
+
 end
 
 
